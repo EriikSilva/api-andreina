@@ -7,15 +7,13 @@ app.use(cors())
 app.use(bodyParser.json());
 
 const users = [
-    { nome: 'usuarioTeste', senha: 'senhaTeste', email:'emailTeste' },
+    { nome: 'Admin', senha: 'senha123', email:'emailTeste@gmail.com', telefone:'', },
 ];
 
 app.get('/api/users', (req, res) => {
     res.json(users);
 });
 
-
-// Rota para criar um novo usuário (registro)
 app.post('/api/register', (req, res) => {
     const data = req.body;
     if (data.nome == "") {
@@ -41,7 +39,6 @@ app.post('/api/register', (req, res) => {
 
     const letrasRegex = /[a-zA-Z]/.test(data.senha);
     const numerosRegex = /\d/.test(data.senha);
-    
       
     if(!data.senha || data.senha < 6){
         return res.status(400).json({ error: 'Campo senha não pode ser vazio ou menor que 6 caracteres' });
@@ -51,11 +48,7 @@ app.post('/api/register', (req, res) => {
       return res.status(400).json({ error: 'A senha deve conter letra(s) e numero(s)' });
     }
 
-    if(!data.telefone){
-        return res.status(400).json({ error: 'Campo telefone não pode ser vazio' });
-    }
-
-    if(data.telefone < 11){
+    if(data.telefone.length > 0 && data.telefone.length !== 11){
         return res.status(400).json({ error: 'Campo telefone não pode ser menor que 11 caracteres' });
     }
 
