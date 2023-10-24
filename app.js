@@ -1,20 +1,45 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+
+const jwt = require('jsonwebtoken');
 const cors = require('cors')
 
 const app = express();
 app.use(cors())
 app.use(bodyParser.json());
+const segredo = 'seuSegredoSuperSecreto';
+
+function middlewareLoginJWT(req, res, next) {
+  const data = req.body;
+
+  if (!data.email || !data.senha) {
+    return res.status(400).json({ error: 'Campos "email" e "senha" são obrigatórios' });
+  }
+
+  for (const user of users) {
+    if (user.email === data.email && user.senha === data.senha) {
+      const token = jwt.sign({ email: user.email }, segredo);
+
+      req.token = token;
+
+      return next();
+    }
+  }
+
+  res.status(401).json({ error: 'Credenciais inválidas' });
+}
+
+
 
 const users = [
-    { nome: 'Admin', senha: 'senha123', email:'emailTeste@gmail.com', telefone:'', },
+    { nome: 'admin', senha: 'senha123', email:'admin@admin.com', telefone:'', },
 ];
 
 app.get('/api/users', (req, res) => {
     res.json(users);
 });
 
-app.post('/api/register', (req, res) => {
+app.post('/api/register', middlewareLoginJWT , (req, res) => {
     const data = req.body;
     if (data.nome == "") {
         return res.status(400).json({ error: 'Campo nome não pode ser vazio' });
@@ -69,15 +94,18 @@ app.post('/api/register', (req, res) => {
     res.status(201).json({ message: 'Usuário registrado com sucesso' });
 });
 
-app.post('/api/login', (req, res) => {
+app.post('/api/login', middlewareLoginJWT, (req, res) => {
     const data = req.body;
-    if (!data.nome || !data.senha) {
+    if (!data.email || !data.senha) {
         return res.status(400).json({ error: 'Campos "nome" e "senha" são obrigatórios' });
     }
 
     for (const user of users) {
-        if (user.nome === data.nome && user.senha === data.senha) {
-            return res.status(200).json({ message: 'Login bem-sucedido' });
+        if (user.email === data.email && user.senha === data.senha) {
+            return res.status(200).json({ 
+                message: 'Login bem-sucedido',
+                token: req.token
+            });
         }
     }
 
