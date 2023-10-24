@@ -32,7 +32,7 @@ function middlewareLoginJWT(req, res, next) {
 const middlewareAutenticacao = require("./src/jsonwebtoken")
 
 const users = [
-    { nome: 'admin', senha: 'senha123', email:'admin@admin.com', telefone:'', },
+    { nome: 'admin', senha: 'senha123', email:'admin@admin.com', telefone:'', cargo:"QA"},
 ];
 
 app.get('/api/users', (req, res) => {
