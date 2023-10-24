@@ -29,7 +29,7 @@ function middlewareLoginJWT(req, res, next) {
   res.status(401).json({ error: 'Credenciais inválidas' });
 }
 
-
+const middlewareAutenticacao = require("./src/jsonwebtoken")
 
 const users = [
     { nome: 'admin', senha: 'senha123', email:'admin@admin.com', telefone:'', },
@@ -39,7 +39,7 @@ app.get('/api/users', (req, res) => {
     res.json(users);
 });
 
-app.post('/api/register', middlewareLoginJWT , (req, res) => {
+app.post('/api/register',middlewareAutenticacao,(req, res) => {
     const data = req.body;
     if (data.nome == "") {
         return res.status(400).json({ error: 'Campo nome não pode ser vazio' });
@@ -89,7 +89,7 @@ app.post('/api/register', middlewareLoginJWT , (req, res) => {
         return res.status(400).json({ error: 'Campo cargo inválido' });
     }
     
-    const newUser = { nome: data.nome, senha: data.senha, email:data.email, senha:data.senha, telefone:data.telefone, cargo:data.cargo};
+    const newUser = { nome: data.nome, email:data.email, senha:data.senha, telefone:data.telefone, cargo:data.cargo};
     users.push(newUser);
     res.status(201).json({ message: 'Usuário registrado com sucesso' });
 });
