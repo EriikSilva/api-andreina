@@ -9,12 +9,12 @@ app.use(cors())
 app.use(bodyParser.json());
 const segredo = 'seuSegredoSuperSecreto';
 
+const users = [
+    { nome: 'admin', senha: 'senha123', email:'admin@admin.com', telefone:'', cargo:"QA"},
+];
+
 function middlewareLoginJWT(req, res, next) {
   const data = req.body;
-
-  if (!data.email || !data.senha) {
-    return res.status(400).json({ error: 'Campos "email" e "senha" são obrigatórios' });
-  }
 
   for (const user of users) {
     if (user.email === data.email && user.senha === data.senha) {
@@ -26,16 +26,13 @@ function middlewareLoginJWT(req, res, next) {
     }
   }
 
-  res.status(401).json({ error: 'Credenciais inválidas' });
+  res.status(401).json({ error: 'Token Ausente' });
 }
 
 const middlewareAutenticacao = require("./src/jsonwebtoken")
 
-const users = [
-    { nome: 'admin', senha: 'senha123', email:'admin@admin.com', telefone:'', cargo:"QA"},
-];
 
-app.get('/api/users', (req, res) => {
+app.get('/api/users', middlewareLoginJWT, (req, res) => {
     res.json(users);
 });
 
@@ -94,7 +91,7 @@ app.post('/api/register',middlewareAutenticacao,(req, res) => {
     res.status(201).json({ message: 'Usuário registrado com sucesso' });
 });
 
-app.post('/api/login', middlewareLoginJWT, (req, res) => {
+app.post('/api/login', (req, res) => {
     const data = req.body;
     if (!data.email || !data.senha) {
         return res.status(400).json({ error: 'Campos "nome" e "senha" são obrigatórios' });
