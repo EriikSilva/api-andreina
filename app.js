@@ -91,7 +91,7 @@ app.post('/api/register',middlewareAutenticacao,(req, res) => {
     res.status(201).json({ message: 'Usuário registrado com sucesso' });
 });
 
-app.post('/api/login', (req, res) => {
+app.post('/api/login', middlewareLoginJWT, (req, res) => {
     const data = req.body;
     if (!data.email || !data.senha) {
         return res.status(400).json({ error: 'Campos "nome" e "senha" são obrigatórios' });
