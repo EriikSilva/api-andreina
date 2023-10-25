@@ -66,7 +66,7 @@ app.post('/api/register', (req, res) => {
     return res.status(400).json({ error: 'Corpo da solicitação vazio' });
   }
 
-  if (data.nome == "") {
+  if (!data.nome) {
     return res.status(400).json({ error: 'Campo nome não pode ser vazio' });
   }
 
@@ -90,8 +90,12 @@ app.post('/api/register', (req, res) => {
   const letrasRegex = /[a-zA-Z]/.test(data.senha);
   const numerosRegex = /\d/.test(data.senha);
 
-  if (!data.senha || data.senha < 6) {
-    return res.status(400).json({ error: 'Campo senha não pode ser vazio ou menor que 6 caracteres' });
+  if (!data.senha) {
+    return res.status(400).json({ error: 'Campo Senha não pode ser vazio' });
+  }
+
+  if (data.senha < 6) {
+    return res.status(400).json({ error: 'Campo senha não pode ser menor que 6 caracteres' });
   }
 
   if (!letrasRegex || !numerosRegex) {
@@ -107,7 +111,7 @@ app.post('/api/register', (req, res) => {
   }
 
   if (!data.cargo) {
-    return res.status(400).json({ error: 'Campo role não pode ser vazio' });
+    return res.status(400).json({ error: 'Campo Cargo não pode ser vazio' });
   }
 
   if (data.cargo !== "QA" && data.cargo !== "DEV" && data.cargo !== "PO") {
