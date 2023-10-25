@@ -57,7 +57,7 @@ app.post('/api/register', (req, res) => {
 
   const data = req.body;
   const token = req.headers.authorization;
-  
+
   if (!token) {
     return res.status(401).json({ error: 'Token Ausente' });
   }
@@ -77,9 +77,14 @@ app.post('/api/register', (req, res) => {
   if (data.nome.length > 80) {
     return res.status(400).json({ error: 'Campo nome não pode ser maior que 80 caracteres' });
   }
+
+  if (!data.email) {
+    return res.status(400).json({ error: 'Campo email não pode ser vazio' });
+  }
+
   const regexEmail = /^[\w\.-]+@[\w\.-]+\.\w+$/;
 
-  if (!regexEmail.test(data.email)) {
+  if (data.email.length > 0 && !regexEmail.test(data.email)) {
     return res.status(400).json({ error: 'Campo email inválido' });
   }
 
@@ -91,7 +96,7 @@ app.post('/api/register', (req, res) => {
   const numerosRegex = /\d/.test(data.senha);
 
   if (!data.senha) {
-    return res.status(400).json({ error: 'Campo Senha não pode ser vazio' });
+    return res.status(400).json({ error: 'Campo senha não pode ser vazio' });
   }
 
   if (data.senha < 6) {
@@ -100,6 +105,10 @@ app.post('/api/register', (req, res) => {
 
   if (!letrasRegex || !numerosRegex) {
     return res.status(400).json({ error: 'A senha deve conter letra(s) e numero(s)' });
+  }
+
+  if (!data.telefone) {
+    return res.status(400).json({ error: 'Campo telefone não pode ser vazio' });
   }
 
   if (data.telefone.length > 0 && data.telefone.length !== 11) {
@@ -111,7 +120,7 @@ app.post('/api/register', (req, res) => {
   }
 
   if (!data.cargo) {
-    return res.status(400).json({ error: 'Campo Cargo não pode ser vazio' });
+    return res.status(400).json({ error: 'Campo cargo não pode ser vazio' });
   }
 
   if (data.cargo !== "QA" && data.cargo !== "DEV" && data.cargo !== "PO") {
