@@ -120,7 +120,7 @@ app.post('/api/register',(req, res) => {
 
 });
 
-app.post('/api/login', (req, res) => {
+app.post('/api/login',middlewareLoginJWT, (req, res) => {
     const data = req.body;
 
     if (!data.email || !data.senha) {
