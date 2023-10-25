@@ -131,7 +131,7 @@ app.post('/api/login', (req, res) => {
         if (user.email === data.email && user.senha === data.senha) {
             return res.status(200).json({ 
                 message: 'Login bem-sucedido',
-                token: globalToken
+                token: req.token
             });
         }
     }
