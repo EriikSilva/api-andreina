@@ -112,7 +112,7 @@ app.post('/api/register', (req, res) => {
   }
 
   if (data.telefone.length > 0 && data.telefone.length !== 11) {
-    return res.status(400).json({ error: 'Campo telefone não pode ser menor que 11 caracteres' });
+    return res.status(400).json({ error: 'Campo telefone deve ter 11 digitos' });
   }
 
   if (isNaN(data.telefone)) {
