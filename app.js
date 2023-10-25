@@ -13,6 +13,7 @@ const users = [
     { nome: 'admin', senha: 'senha123', email:'admin@admin.com', telefone:'', cargo:"QA"},
 ];
 
+
 function middlewareLoginJWT(req, res, next) {
   const data = req.body;
 
@@ -21,7 +22,6 @@ function middlewareLoginJWT(req, res, next) {
       const token = jwt.sign({ email: user.email }, segredo);
 
       req.token = token;
-
       return next();
     }
   }
@@ -32,12 +32,33 @@ function middlewareLoginJWT(req, res, next) {
 const middlewareAutenticacao = require("./src/jsonwebtoken")
 
 
-app.get('/api/users', middlewareLoginJWT, (req, res) => {
-    res.json(users);
+app.get('/api/users', (req, res) => {
+    const token = req.headers.authorization;
+    if (!token) {
+        return res.status(401).json({ error: 'Token Ausente' });
+      }
+
+      jwt.verify(token, segredo, (err, decoded) => {
+        if (err) {
+          return res.status(401).json({ error: 'Token Inválido' });
+        }
+      
+        res.json(users);
+      });
+
+  
 });
 
-app.post('/api/register',middlewareAutenticacao,(req, res) => {
+app.post('/api/register',(req, res) => {
     const data = req.body;
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Token Ausente' });
+      }
+
+    
     if (data.nome == "") {
         return res.status(400).json({ error: 'Campo nome não pode ser vazio' });
     }
@@ -85,14 +106,23 @@ app.post('/api/register',middlewareAutenticacao,(req, res) => {
     if(data.cargo !== "QA" && data.cargo !== "DEV" && data.cargo !== "PO"){
         return res.status(400).json({ error: 'Campo cargo inválido' });
     }
+
+    jwt.verify(token, segredo, (err, decoded) => {
+        if (err) {
+          return res.status(401).json({ error: 'Token Inválido' });
+        }
     
-    const newUser = { nome: data.nome, email:data.email, senha:data.senha, telefone:data.telefone, cargo:data.cargo};
-    users.push(newUser);
-    res.status(201).json({ message: 'Usuário registrado com sucesso' });
+    
+        const newUser = { nome: data.nome, email:data.email, senha:data.senha, telefone:data.telefone, cargo:data.cargo};
+        users.push(newUser);
+        res.status(201).json({ message: 'Usuário registrado com sucesso' });
+      });
+
 });
 
-app.post('/api/login', middlewareLoginJWT, (req, res) => {
+app.post('/api/login', (req, res) => {
     const data = req.body;
+
     if (!data.email || !data.senha) {
         return res.status(400).json({ error: 'Campos "nome" e "senha" são obrigatórios' });
     }
@@ -101,7 +131,7 @@ app.post('/api/login', middlewareLoginJWT, (req, res) => {
         if (user.email === data.email && user.senha === data.senha) {
             return res.status(200).json({ 
                 message: 'Login bem-sucedido',
-                token: req.token
+                token: globalToken
             });
         }
     }
