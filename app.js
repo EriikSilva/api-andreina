@@ -107,15 +107,11 @@ app.post('/api/register', (req, res) => {
     return res.status(400).json({ error: 'A senha deve conter letra(s) e numero(s)' });
   }
 
-  if (!data.telefone) {
-    return res.status(400).json({ error: 'Campo telefone não pode ser vazio' });
-  }
-
-  if (data.telefone.length > 0 && data.telefone.length !== 11) {
+  if (data.telefone?.length > 0 && data.telefone?.length !== 11) {
     return res.status(400).json({ error: 'Campo telefone deve ter 11 digitos' });
   }
 
-  if (isNaN(data.telefone)) {
+  if (data.telefone && isNaN(data.telefone)) {
     return res.status(400).json({ error: 'Campo telefone não pode conter letras ou caracteres especiais' });
   }
 
