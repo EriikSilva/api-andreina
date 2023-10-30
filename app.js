@@ -95,7 +95,7 @@ app.post('/api/register', (req, res) => {
   const letrasRegex = /[a-zA-Z]/.test(data.senha);
   const numerosRegex = /\d/.test(data.senha);
 
-  if (!data.senha) {
+  if (!data.senha || data.senha == null) {
     return res.status(400).json({ error: 'Campo senha não pode ser vazio' });
   }
 
