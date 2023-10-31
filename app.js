@@ -53,7 +53,7 @@ app.get('/api/users', (req, res) => {
 
 });
 
-app.post('/api/users', (req, res) => {
+app.post('/api/user', (req, res) => {
 
   const data = req.body;
   const token = req.headers.authorization;
