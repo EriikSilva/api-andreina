@@ -107,7 +107,7 @@ app.post('/api/register', (req, res) => {
     return res.status(400).json({ error: 'A senha deve conter letra(s) e numero(s)' });
   }
 
-  if (data.telefone?.length > 0 && data.telefone?.length !== 11) {
+  if (data.telefone?.length > 0 && String(data.telefone)?.length !== 11) {
     return res.status(400).json({ error: 'Campo telefone deve ter 11 dígitos' });
   }
 
