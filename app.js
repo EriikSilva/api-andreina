@@ -99,7 +99,7 @@ app.post('/api/register', (req, res) => {
     return res.status(400).json({ error: 'Campo senha não pode ser vazio' });
   }
 
-  if (data.senha < 6) {
+  if (data.senha.length < 6) {
     return res.status(400).json({ error: 'Campo senha não pode ser menor que 6 caracteres' });
   }
 
@@ -107,7 +107,7 @@ app.post('/api/register', (req, res) => {
     return res.status(400).json({ error: 'A senha deve conter letra(s) e numero(s)' });
   }
 
-  if (data.telefone?.length > 0 && String(data.telefone)?.length !== 11) {
+  if (String(data.telefone)?.length > 0 && String(data.telefone)?.length !== 11) {
     return res.status(400).json({ error: 'Campo telefone deve ter 11 dígitos' });
   }
 
